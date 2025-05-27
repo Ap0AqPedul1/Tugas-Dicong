@@ -19,7 +19,6 @@
         android:src="@drawable/ic_launcher_foreground"
         tools:ignore="ImageContrastCheck" />
 
-    <!-- Judul Masuk -->
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -30,7 +29,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp" />
 
-    <!-- Label dan Input Email -->
     <TextView
         android:id="@+id/tv_email_label"
         android:layout_width="wrap_content"
@@ -52,7 +50,7 @@
         android:textColorHint="#1976D2"
         tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
 
-    <!-- Label dan Input Password -->
+    <!-- Label Password -->
     <TextView
         android:id="@+id/tv_password_label"
         android:layout_width="wrap_content"
@@ -60,6 +58,15 @@
         android:text="@string/masukan_password"
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
+
+    <!-- TextView untuk Validasi Password -->
+    <TextView
+        android:id="@+id/tv_password_validation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/et_password"
@@ -72,9 +79,8 @@
         android:inputType="textPassword"
         android:padding="12dp"
         android:textColorHint="#1976D2"
-        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        tools:ignore="TextContrastCheck,VisualLintTextFieldSize,DuplicateSpeakableTextCheck" />
 
-    <!-- Baris link Daftar dan Lupa Password -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

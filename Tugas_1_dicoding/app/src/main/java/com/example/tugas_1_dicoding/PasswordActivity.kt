@@ -1,20 +1,19 @@
 package com.example.tugas_1_dicoding
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.tugas_1_dicoding.databinding.ActivityPasswordBinding
 
 class PasswordActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityPasswordBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_password)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.password_root_layout)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        binding = ActivityPasswordBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
     }
+
+
 }
