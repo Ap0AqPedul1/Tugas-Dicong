@@ -37,25 +37,19 @@
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 
-    <EditText
+    <com.example.tugas_1_dicoding.CustomEmailEditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:autofillHints=""
-        android:background="@drawable/edittext_border"
+        android:layout_height="wrap_content"
         android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:textColorHint="#1976D2"
-        tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
+        />
 
     <!-- Label Password -->
     <TextView
         android:id="@+id/tv_password_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/masukan_password"
+        android:text="@string/password"
         android:textSize="14sp"
         android:layout_marginBottom="4dp" />
 
@@ -68,18 +62,14 @@
         android:textColor="#FF0000"
         android:visibility="gone" />
 
-    <EditText
+    <com.example.tugas_1_dicoding.CustomPasswordEditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/edittext_border"
+        android:layout_height="wrap_content"
         android:hint="@string/password"
-        android:importantForAutofill="no"
         android:inputType="textPassword"
-        android:padding="12dp"
-        android:textColorHint="#1976D2"
-        tools:ignore="TextContrastCheck,VisualLintTextFieldSize,DuplicateSpeakableTextCheck" />
+        />
+
 
     <LinearLayout
         android:layout_width="match_parent"
