@@ -9,22 +9,22 @@ import android.util.Log
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class CustomEmailEditText @JvmOverloads constructor(
+class CustomEditText @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : TextInputLayout(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TAG = "CustomEmailEditText"
+        private const val TAG = "CustomPasswordEditText"
     }
 
     enum class Mode {
-        CREATE_ACCOUNT, LOGIN, CONFIRM
+        CREATE_ACCOUNT, LOGIN, CONFIRM, NAME, EMAIL
     }
 
-    private val editTextField = TextInputEditText(context)
-    private var confirmTarget: CustomPasswordEditText? = null
+    val editTextField = TextInputEditText(context)
+    private var confirmTarget: CustomEditText? = null
 
     var mode: Mode = Mode.CREATE_ACCOUNT
         set(value) {
@@ -85,7 +85,7 @@ class CustomEmailEditText @JvmOverloads constructor(
         }
     }
 
-    fun setConfirmTarget(target: CustomPasswordEditText) {
+    fun setConfirmTarget(target: CustomEditText) {
         confirmTarget = target
         mode = Mode.CONFIRM
     }
@@ -99,6 +99,16 @@ class CustomEmailEditText @JvmOverloads constructor(
         }
 
         when (mode) {
+
+            Mode.NAME ->{
+                error = null
+            }
+
+            Mode.EMAIL -> {
+                val emailPattern = android.util.Patterns.EMAIL_ADDRESS
+                error = if (!emailPattern.matcher(input).matches()) "Format email tidak valid" else null
+            }
+
             Mode.CONFIRM -> {
                 val targetText = confirmTarget?.editTextField?.text?.toString() ?: ""
                 error = if (input != targetText) "Konfirmasi password tidak cocok" else null
@@ -121,6 +131,4 @@ class CustomEmailEditText @JvmOverloads constructor(
             }
         }
     }
-
-    fun getEditTextField(): TextInputEditText = editTextField
 }

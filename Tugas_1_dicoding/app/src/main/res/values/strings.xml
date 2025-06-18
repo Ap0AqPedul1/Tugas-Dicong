@@ -19,4 +19,5 @@
     <string name="masuk">Masuk</string>
     <string name="masukkan_email_untuk_mengatur_ulang_password">Masukkan email untuk mengatur ulang password</string>
     <string name="kirim">Kirim</string>
+    <string name="name">Name</string>
 </resources>
