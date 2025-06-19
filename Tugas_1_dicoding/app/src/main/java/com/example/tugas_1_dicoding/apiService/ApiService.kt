@@ -11,7 +11,7 @@ interface ApiService {
     fun registerUser(@Body request: RegRequest): Call<RegResponse>
 
     @Headers("Content-Type: application/json")
-    @POST("register")
+    @POST("login")
     fun loginUser(@Body request: LogRequest): Call<LogResponse>
 }
 

@@ -37,7 +37,7 @@
         android:textSize="14sp"
         android:layout_marginTop="32dp" />
 
-    <com.example.tugas_1_dicoding.CustomEditText
+    <com.example.tugas_1_dicoding.custom.CustomEditText
         android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         android:textSize="14sp"
         android:layout_marginTop="16dp" />
 
-    <com.example.tugas_1_dicoding.CustomEditText
+    <com.example.tugas_1_dicoding.custom.CustomEditText
         android:id="@+id/et_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         android:textSize="14sp"
         android:layout_marginTop="16dp" />
 
-    <com.example.tugas_1_dicoding.CustomEditText
+    <com.example.tugas_1_dicoding.custom.CustomEditText
         android:id="@+id/et_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,11 +1,13 @@
 package com.example.tugas_1_dicoding
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tugas_1_dicoding.apiService.AuthService
 import com.example.tugas_1_dicoding.apiService.LogRequest
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
+import com.example.tugas_1_dicoding.custom.CustomEditText
 import com.example.tugas_1_dicoding.databinding.ActivityLoginBinding
 import com.example.tugas_1_dicoding.errorDialogPopUp.ErrorDialogPopUp
 
@@ -36,7 +38,8 @@ class LoginActivity : AppCompatActivity() {
 
             val email = binding.etEmail.editTextField.text.toString()
             val password = binding.etPassword.editTextField.text.toString()
-            val dataUser  = LogRequest(email,password)
+//            val dataUser  = LogRequest(email,password)
+            val dataUser  = LogRequest("azharibastomitest@gmail.com","@Ap0AqPedul1")
             loginUser(dataUser,errorDialog)
             Log.d("asd","ssss")
         }
@@ -51,9 +54,17 @@ class LoginActivity : AppCompatActivity() {
             logRequest = dataUser
         ) { result ->
             result.onSuccess {
-                errorDialog.show("Sukses","Akun Berhasil Dibuat")
+                
+                binding.etEmail.clearText()
+                binding.etPassword.clearText()
+                errorDialog.show("Sukses","Berhasil Login")
+
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent)
+//                finish()
             }.onFailure {
                 errorDialog.show("Error:", "${it.message}")
+                binding.etPassword.clearText()
             }
         }
     }

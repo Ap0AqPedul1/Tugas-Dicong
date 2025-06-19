@@ -1,4 +1,4 @@
-package com.example.tugas_1_dicoding
+package com.example.tugas_1_dicoding.custom
 
 import android.content.Context
 import android.text.Editable
@@ -6,6 +6,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
+import com.example.tugas_1_dicoding.R
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -131,4 +132,10 @@ class CustomEditText @JvmOverloads constructor(
             }
         }
     }
+
+    fun clearText() {
+        editTextField.text?.clear()
+        error = null // Also clear any error shown
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.example.tugas_1_dicoding.apiService
 
+import android.util.Log
+
 class AuthService(private val apiClient: ApiService) {
 
     fun createUser(
@@ -36,6 +38,7 @@ class AuthService(private val apiClient: ApiService) {
             errorClass = LogResponse::class.java,
             callback = object : ApiCallback<LogResponse, LogResponse> {
                 override fun onSuccess(response: LogResponse) {
+                    Log.d("asd", response.loginResult.toString())
                     callback(Result.success(response))
                 }
 

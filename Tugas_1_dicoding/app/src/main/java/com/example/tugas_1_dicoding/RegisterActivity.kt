@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.tugas_1_dicoding.apiService.AuthService
 import com.example.tugas_1_dicoding.apiService.RegRequest
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
+import com.example.tugas_1_dicoding.custom.CustomEditText
 import com.example.tugas_1_dicoding.databinding.ActivityRegisterBinding
 import com.example.tugas_1_dicoding.errorDialogPopUp.ErrorDialogPopUp
 
@@ -47,7 +48,11 @@ class RegisterActivity : AppCompatActivity() {
         ) { result ->
             result.onSuccess {
                 errorDialog.show("Sukses","Akun Berhasil Dibuat")
+                binding.etEmail.clearText()
+                binding.etName.clearText()
+                binding.etPassword.clearText()
             }.onFailure {
+                binding.etPassword.clearText()
                 errorDialog.show("Error:", "${it.message}")
             }
         }
