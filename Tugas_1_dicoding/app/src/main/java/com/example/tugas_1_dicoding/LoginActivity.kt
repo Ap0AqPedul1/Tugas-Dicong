@@ -7,13 +7,16 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.tugas_1_dicoding.apiService.AuthService
 import com.example.tugas_1_dicoding.apiService.LogRequest
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
+import com.example.tugas_1_dicoding.apiService.User
 import com.example.tugas_1_dicoding.custom.CustomEditText
 import com.example.tugas_1_dicoding.databinding.ActivityLoginBinding
-import com.example.tugas_1_dicoding.errorDialogPopUp.ErrorDialogPopUp
+import com.example.tugas_1_dicoding.dialogPopUp.DialogPopUp
+import com.example.tugas_1_dicoding.sharedPrefHelper.SharedPrefHelper
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var sharedPref: SharedPrefHelper
     private lateinit var authService: AuthService
 
 
@@ -25,8 +28,10 @@ class LoginActivity : AppCompatActivity() {
         setupButtonNavigation(this, binding.tvForgotPassword, PasswordActivity::class.java)
         setupButtonNavigation(this, binding.tvRegister, RegisterActivity::class.java)
 
-        val errorDialog = ErrorDialogPopUp(this)
+        val errorDialog = DialogPopUp(this)
+
         authService = AuthService(RetrofitClient.instance)
+        sharedPref = SharedPrefHelper(this)
 
 
         binding.etPassword.mode = CustomEditText.Mode.LOGIN
@@ -49,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-    private fun loginUser(dataUser: LogRequest, errorDialog: ErrorDialogPopUp){
+    private fun loginUser(dataUser: LogRequest, errorDialog: DialogPopUp){
         authService.loginUser(
             logRequest = dataUser
         ) { result ->
@@ -57,11 +62,16 @@ class LoginActivity : AppCompatActivity() {
                 
                 binding.etEmail.clearText()
                 binding.etPassword.clearText()
+                val user = User(it.loginResult?.userId.toString(),
+                    it.loginResult?.name.toString(),
+                    it.loginResult?.token.toString(),
+                    isLoggedIn = true)
+                sharedPref.saveUser(user)
                 errorDialog.show("Sukses","Berhasil Login")
 
-//                val intent = Intent(this, MainActivity::class.java)
-//                startActivity(intent)
-//                finish()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
             }.onFailure {
                 errorDialog.show("Error:", "${it.message}")
                 binding.etPassword.clearText()

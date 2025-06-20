@@ -30,3 +30,11 @@ data class LoginResult(
     val name: String,
     val token: String
 )
+
+data class User(
+    val userId: String,
+    val name: String,
+    val token: String,
+    val isLoggedIn: Boolean
+)
+

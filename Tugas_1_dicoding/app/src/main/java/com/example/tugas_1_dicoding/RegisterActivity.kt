@@ -8,7 +8,7 @@ import com.example.tugas_1_dicoding.apiService.RegRequest
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
 import com.example.tugas_1_dicoding.custom.CustomEditText
 import com.example.tugas_1_dicoding.databinding.ActivityRegisterBinding
-import com.example.tugas_1_dicoding.errorDialogPopUp.ErrorDialogPopUp
+import com.example.tugas_1_dicoding.dialogPopUp.DialogPopUp
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -22,7 +22,7 @@ class RegisterActivity : AppCompatActivity() {
 
         setupBackButtonNavigation(this,binding.tvLogin, LoginActivity::class.java )
 
-        val errorDialog = ErrorDialogPopUp(this)
+        val errorDialog = DialogPopUp(this)
         authService = AuthService(RetrofitClient.instance)
 
 
@@ -42,7 +42,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun createUser(dataUser: RegRequest, errorDialog:ErrorDialogPopUp){
+    private fun createUser(dataUser: RegRequest, errorDialog:DialogPopUp){
         authService.createUser(
             regRequest = dataUser
         ) { result ->
