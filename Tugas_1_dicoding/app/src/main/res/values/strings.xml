@@ -20,4 +20,7 @@
     <string name="masukkan_email_untuk_mengatur_ulang_password">Masukkan email untuk mengatur ulang password</string>
     <string name="kirim">Kirim</string>
     <string name="name">Name</string>
+    <string name="todo">TODO</string>
+    <string name="location_format">Latitude: %1$s, Longitude: %2$s</string>
+    <string name="upload_post">Upload Post</string>
 </resources>

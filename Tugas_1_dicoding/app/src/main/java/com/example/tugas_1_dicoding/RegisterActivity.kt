@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tugas_1_dicoding.apiService.AuthService
-import com.example.tugas_1_dicoding.apiService.RegRequest
+import com.example.tugas_1_dicoding.dataClass.RegRequest
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
 import com.example.tugas_1_dicoding.custom.CustomEditText
 import com.example.tugas_1_dicoding.databinding.ActivityRegisterBinding

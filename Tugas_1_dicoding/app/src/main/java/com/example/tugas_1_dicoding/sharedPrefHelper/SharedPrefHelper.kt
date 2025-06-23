@@ -1,7 +1,7 @@
 package com.example.tugas_1_dicoding.sharedPrefHelper
 
 import android.content.Context
-import com.example.tugas_1_dicoding.apiService.User
+import com.example.tugas_1_dicoding.dataClass.User
 import com.google.gson.Gson
 
 class SharedPrefHelper(private val context: Context) {

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tugas_1_dicoding.apiService.AuthService
-import com.example.tugas_1_dicoding.apiService.LogRequest
+import com.example.tugas_1_dicoding.dataClass.LogRequest
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
-import com.example.tugas_1_dicoding.apiService.User
+import com.example.tugas_1_dicoding.dataClass.User
 import com.example.tugas_1_dicoding.custom.CustomEditText
 import com.example.tugas_1_dicoding.databinding.ActivityLoginBinding
 import com.example.tugas_1_dicoding.dialogPopUp.DialogPopUp
@@ -50,10 +50,6 @@ class LoginActivity : AppCompatActivity() {
         }
         }
 
-
-
-
-
     private fun loginUser(dataUser: LogRequest, errorDialog: DialogPopUp){
         authService.loginUser(
             logRequest = dataUser
@@ -66,12 +62,14 @@ class LoginActivity : AppCompatActivity() {
                     it.loginResult?.name.toString(),
                     it.loginResult?.token.toString(),
                     isLoggedIn = true)
+
                 sharedPref.saveUser(user)
-                errorDialog.show("Sukses","Berhasil Login")
 
                 val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("user_data", user)
                 startActivity(intent)
                 finish()
+
             }.onFailure {
                 errorDialog.show("Error:", "${it.message}")
                 binding.etPassword.clearText()

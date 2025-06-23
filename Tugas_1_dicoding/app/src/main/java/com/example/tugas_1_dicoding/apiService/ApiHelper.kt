@@ -1,5 +1,6 @@
 package com.example.tugas_1_dicoding.apiService
 
+import com.example.tugas_1_dicoding.dataClass.Story
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,10 +13,19 @@ interface ApiCallback<T, E> {
     fun onFailure(throwable: Throwable)
 }
 
+interface StoryFetchCallback {
+    fun onStoriesFetched(stories: List<Story>)
+    fun onError(message: String)
+}
+
+interface DetailStoryFetchCallback {
+    fun onStoriesFetched(story: Story?)
+    fun onError(message: String)
+}
+
 
 object ApiHelper {
     private val gson = Gson()
-
     fun <T, E> executeCall(
         call: Call<T>,
         errorClass: Class<E>,

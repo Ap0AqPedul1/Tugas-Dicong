@@ -4,6 +4,7 @@ plugins {
     id("kotlin-android")
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
 }
 
 android {
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,6 +69,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx) //viewModelScope
     implementation(libs.androidx.lifecycle.livedata.ktx) //liveData
     implementation(libs.androidx.room.ktx)
+
+    //glide
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    kapt ("com.github.bumptech.glide:compiler:4.15.1")
+
 
 
 }
