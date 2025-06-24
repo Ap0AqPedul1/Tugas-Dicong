@@ -2,6 +2,7 @@ package com.example.tugas_1_dicoding.dataClass
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.io.File
 
 @Parcelize
 data class RegRequest(
@@ -67,44 +68,20 @@ data class StoryResponse(
 
 
 @Parcelize
-data class _StoryResponse(
+data class DetailStoryResponse(
     val error: Boolean,
     val message: String,
     val story: Story
 ) :Parcelable
 
-data class _Story(
-    val id: String,
-    val name: String,
-    val description: String,
-    val photoUrl: String,
-    val createdAt: String,
-    val lat: Double,
-    val lon: Double
-)
 
 
+@Parcelize
 data class DetailStoryRequest(
     val id: String,
     val token: String,
-)
+) : Parcelable
 
-
-data class DetailStoryResponse(
-    val error: Boolean,
-    val message: String,
-    val data: asd
-)
-
-data class asd(
-    val id: String,
-    val name: String,
-    val description: String,
-    val photoUrl: String,
-    val createdAt: String,
-    val lat: Double?,     // nullable if it might be null
-    val lon: Double?      // nullable if it might be null
-)
 
 @Parcelize
 data class Story(
@@ -117,6 +94,20 @@ data class Story(
     val lon: Double?      // nullable if it might be null
 ) : Parcelable
 
+@Parcelize
+data class UploadResponse(
+    val error: Boolean,
+    val message: String
+) : Parcelable
+
+@Parcelize
+data class UploadRequest(
+    var token: String,
+    var description: String,
+    var lat: Double?,
+    var lon: Double?,
+    var photoFile: File
+) :Parcelable
 
 
 

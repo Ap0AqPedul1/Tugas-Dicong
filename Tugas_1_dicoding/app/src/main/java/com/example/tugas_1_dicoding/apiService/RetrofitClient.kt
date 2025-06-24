@@ -4,12 +4,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    val instance: ApiService by lazy {
+
+    val instance: RetrofitService by lazy {
         Retrofit.Builder()
             .baseUrl("https://story-api.dicoding.dev/v1/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java)
+            .create(RetrofitService::class.java)
     }
 }
 

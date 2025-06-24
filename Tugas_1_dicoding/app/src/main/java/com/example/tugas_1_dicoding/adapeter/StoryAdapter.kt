@@ -1,5 +1,6 @@
 package com.example.tugas_1_dicoding.adapeter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,13 @@ class StoryAdapter(
         items.addAll(newItems)
         notifyItemRangeInserted(startPos, newItems.size)
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clearItems() {
+        items.clear()
+        notifyDataSetChanged()
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val binding = ItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)

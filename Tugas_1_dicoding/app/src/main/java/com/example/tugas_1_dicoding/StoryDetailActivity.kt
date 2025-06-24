@@ -7,8 +7,8 @@ import com.bumptech.glide.Glide
 import com.example.tugas_1_dicoding.apiService.DetailStoryFetchCallback
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
 import com.example.tugas_1_dicoding.dataClass.DetailStoryRequest
+import com.example.tugas_1_dicoding.dataClass.DetailStoryResponse
 import com.example.tugas_1_dicoding.dataClass.Story
-import com.example.tugas_1_dicoding.dataClass._StoryResponse
 import com.example.tugas_1_dicoding.databinding.ActivityStoryDetailBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -45,6 +45,7 @@ class StoryDetailActivity : AppCompatActivity() {
 
                 Glide.with(binding.root.context)
                     .load(story?.photoUrl)
+                    .fitCenter()
                     .into(binding.imageStory)
             }
 
@@ -57,8 +58,8 @@ class StoryDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchDetailStory(data: DetailStoryRequest, callback: DetailStoryFetchCallback) {
-        RetrofitClient.instance.getStory(data.token, data.id).enqueue(object : Callback<_StoryResponse> {
-            override fun onResponse(call: Call<_StoryResponse>, response: Response<_StoryResponse>) {
+        RetrofitClient.instance.getStory(data.token, data.id).enqueue(object : Callback<DetailStoryResponse> {
+            override fun onResponse(call: Call<DetailStoryResponse>, response: Response<DetailStoryResponse>) {
                 if (response.isSuccessful) {
                     val story = response.body()?.story
                     callback.onStoriesFetched(story)
@@ -67,7 +68,7 @@ class StoryDetailActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<_StoryResponse>, t: Throwable) {
+            override fun onFailure(call: Call<DetailStoryResponse>, t: Throwable) {
                 callback.onError("API call failed: ${t.message}")
             }
         })

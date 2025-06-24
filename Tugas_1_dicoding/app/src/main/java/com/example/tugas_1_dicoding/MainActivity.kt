@@ -1,13 +1,15 @@
 package com.example.tugas_1_dicoding
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tugas_1_dicoding.adapeter.StoryAdapter
-import com.example.tugas_1_dicoding.apiService.AuthService
 import com.example.tugas_1_dicoding.apiService.RetrofitClient
 import com.example.tugas_1_dicoding.apiService.StoryFetchCallback
 import com.example.tugas_1_dicoding.dataClass.Story
@@ -15,7 +17,7 @@ import com.example.tugas_1_dicoding.dataClass.StoryRequest
 import com.example.tugas_1_dicoding.dataClass.StoryResponse
 import com.example.tugas_1_dicoding.dataClass.User
 import com.example.tugas_1_dicoding.databinding.ActivityMainBinding
-import com.example.tugas_1_dicoding.uploadPost.PostFragment
+import com.example.tugas_1_dicoding.uploadPost.PostImageDialogFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,11 +25,14 @@ import retrofit2.Response
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: StoryAdapter
+    private lateinit var storyAdapter: StoryAdapter
 
-    private val pageSize = 15
+    private var token  = ""
+    private val pageSize = 20
     private var currentPage = 0
+
     private var isLoading = false
+    private var isLastPage = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,70 +40,88 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = getUserFromIntent()
 
-        adapter = StoryAdapter { story ->
+        val user = getUserFromIntent()
+        if (user != null) {
+            token = user.token
+        }
+
+
+        supportFragmentManager.setFragmentResultListener("requestKey", this) { key, bundle ->
+            val result = bundle.getString("result_key")
+            Log.d("azhari", "Diterima data dari DialogFragment: $result")
+            storyAdapter.clearItems()
+            currentPage = 0
+        }
+
+        binding.fabUploadPost.setOnClickListener {
+            val fragment = PostImageDialogFragment()
+            val bundle = Bundle()
+            bundle.putString("key_data", user?.token)
+            fragment.arguments = bundle
+            fragment.show(supportFragmentManager, "PostImageDialog")
+        }
+
+
+
+
+        val storyRequest = StoryRequest(token,currentPage, pageSize)
+        setupRecyclerView()
+        loadStories(storyRequest)
+
+
+    }
+
+    private fun setupRecyclerView() {
+        val layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+
+        storyAdapter = StoryAdapter { story ->
             val intent = Intent(this, StoryDetailActivity::class.java).apply {
                 putExtra("EXTRA_ID", story.id)
-                putExtra("EXTRA_TOKEN", user?.token)
+                putExtra("EXTRA_TOKEN", token)
             }
             startActivity(intent)
         }
-
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = storyAdapter
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                val layoutManager = rv.layoutManager as LinearLayoutManager
-                val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
+                super.onScrolled(rv, dx, dy)
                 val totalItemCount = layoutManager.itemCount
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
-                // Jika belum loading dan posisi scroll sudah mencapai item ke 6 dari data yg sudah dimuat
-                if (!isLoading && lastVisiblePosition >= totalItemCount - 4) {
-                    loadNextPage(user?.token.toString())
+                // Cek jika mendekati 15 item terakhir dan belum loading atau bukan halaman terakhir
+                if (!isLoading && !isLastPage && totalItemCount <= lastVisibleItemPosition + 15) {
+                    isLoading = true
+                    currentPage++
+                    Log.d("asd", "data")
+                    val storyRequest = StoryRequest(token,currentPage, pageSize)
+                    Log.d("asd", storyRequest.toString())
+                    loadStories(storyRequest)
                 }
             }
         })
-
-        loadNextPage(user?.token.toString())  // load page pertama
     }
 
-    private fun loadNextPage(token:String) {
-        isLoading = true
-
-        currentPage * pageSize
-        val paramStories = StoryRequest(token,currentPage,pageSize)
-
-        binding.fabUploadPost.setOnClickListener {
-            val fragment = PostFragment()
-            fragment.show(supportFragmentManager, "upload_post_fragment")
-        }
-
-        fetchStory(paramStories, object : StoryFetchCallback {
+    private fun loadStories(storyRequest: StoryRequest){
+        fetchStory(storyRequest, object : StoryFetchCallback {
             override fun onStoriesFetched(stories: List<Story>) {
-                if (stories.isNotEmpty()) {
-                    adapter.addItems(stories)
-
-                    // Cek apakah ada item ke-13 dari keseluruhan yang sudah dimuat
-                    val totalItems = (currentPage + 1) * pageSize
-                    if (totalItems >= 13) {
-                        Log.d(
-                            "PaginationLog",
-                            "Data sudah mencapai item ke-13 atau lebih. Total Item: $totalItems"
-                        )
-                    }
-                    currentPage++
+                if (stories.isEmpty()) {
+                    Log.d("asd", "kesini???")
+                    isLastPage = true
+                } else {
+                    Log.d("asd", "bentar???")
+                    Log.d("asd", stories.toString())
+                    storyAdapter.addItems(stories)
                 }
-                Log.d("PaginationLog", stories.toString())
+                isLoading = false
             }
 
             override fun onError(message: String) {
-                Log.e("StoryError", message)
+                isLoading = false
             }
         })
-
-        isLoading = false
     }
 
     private fun fetchStory(storyRequest: StoryRequest, callback: StoryFetchCallback) {
@@ -127,6 +150,33 @@ class MainActivity : AppCompatActivity() {
         return intent.getParcelableExtra("user_data")
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_list -> {
+                logoutUser()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
+    private fun logoutUser() {
+        // Hapus data user dari SharedPreferences
+        val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            clear()
+            apply()
+        }
+
+        // Pindah ke LoginActivity dan bersihkan riwayat activity
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
 }

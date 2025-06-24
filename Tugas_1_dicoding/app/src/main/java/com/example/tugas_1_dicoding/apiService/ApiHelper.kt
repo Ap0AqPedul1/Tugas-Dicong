@@ -1,10 +1,7 @@
 package com.example.tugas_1_dicoding.apiService
 
+import com.example.tugas_1_dicoding.dataClass.LoginResult
 import com.example.tugas_1_dicoding.dataClass.Story
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 // Interface callback generik
 interface ApiCallback<T, E> {
@@ -23,36 +20,17 @@ interface DetailStoryFetchCallback {
     fun onError(message: String)
 }
 
+interface LoginFetchCallback {
+    fun onLoginFetched(login: LoginResult?)
+    fun onError(message: String)
+}
 
-object ApiHelper {
-    private val gson = Gson()
-    fun <T, E> executeCall(
-        call: Call<T>,
-        errorClass: Class<E>,
-        callback: ApiCallback<T, E>
-    ) {
-        call.enqueue(object : Callback<T> {
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                if (response.isSuccessful && response.body() != null) {
-                    callback.onSuccess(response.body()!!)
-                } else {
-                    val errorBodyString = response.errorBody()?.string()
-                    if (!errorBodyString.isNullOrEmpty()) {
-                        try {
-                            val errorResponse = gson.fromJson(errorBodyString, errorClass)
-                            callback.onError(errorResponse)
-                        } catch (e: Exception) {
-                            callback.onFailure(e)
-                        }
-                    } else {
-                        callback.onFailure(Throwable("Unknown error, no error body"))
-                    }
-                }
-            }
+interface CreateUserFetchCallback {
+    fun onCreateFetched(create: String?)
+    fun onError(message: String)
+}
 
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                callback.onFailure(t)
-            }
-        })
-    }
+interface UploadFetchCallback {
+    fun onUploadFetched(upload: String)
+    fun onError(message: String)
 }
