@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
-
-
 
     <application
         android:allowBackup="true"
@@ -19,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Tugas_1_dicoding"
         tools:targetApi="31">
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.tugas_1_dicoding.fileprovider"
@@ -30,26 +24,29 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
-
         <activity
-            android:name=".StoryDetailActivity"
+            android:name=".ui.sotrydetail.StoryDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name=".ui.forgetPass.PasswordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name=".ui.register.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PasswordActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".splashScreen.SplashActivity"
-            android:exported="true">
+            android:name=".ui.splashScreen.SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

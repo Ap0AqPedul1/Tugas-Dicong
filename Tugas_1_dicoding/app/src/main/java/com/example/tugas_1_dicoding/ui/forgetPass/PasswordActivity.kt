@@ -1,4 +1,4 @@
-package com.example.tugas_1_dicoding
+package com.example.tugas_1_dicoding.ui.forgetPass
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

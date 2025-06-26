@@ -109,6 +109,12 @@ data class UploadRequest(
     var photoFile: File
 ) :Parcelable
 
+@Parcelize
+data class ErrorResponse(
+    val error: Boolean,
+    val message: String
+) : Parcelable
+
 
 
 

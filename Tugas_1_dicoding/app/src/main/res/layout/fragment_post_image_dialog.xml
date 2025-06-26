@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dialog_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -18,25 +19,32 @@
         android:id="@+id/buttonOpenCamera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Camera"
-        android:layout_marginTop="8dp" />
+        android:text="@string/open_camera"
+        android:layout_marginTop="8dp"
+        tools:ignore="VisualLintButtonSize" />
 
     <Button
         android:id="@+id/buttonOpenGallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Open Gallery"
-        android:layout_marginTop="4dp" />
+        android:text="@string/open_gallery"
+        android:layout_marginTop="4dp"
+        tools:ignore="VisualLintButtonSize" />
 
     <EditText
         android:id="@+id/editTextDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
+        android:hint="@string/description"
         android:inputType="textMultiLine"
-        android:layout_marginTop="8dp" />
+        android:minHeight="48dp"
+        android:textColorHint="#546E7A"
+        tools:ignore="VisualLintTextFieldSize" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -45,15 +53,18 @@
 
         <Button
             android:id="@+id/buttonPost"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Post" />
+            android:text="@string/post" />
 
         <Button
             android:id="@+id/buttonCancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:layout_marginStart="8dp" />
+            android:text="@string/cancel"
+            android:layout_marginStart="8dp"
+            tools:ignore="ButtonOrder" />
     </LinearLayout>
 </LinearLayout>

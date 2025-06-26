@@ -1,84 +1,47 @@
 package com.example.tugas_1_dicoding.uploadPost
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
-import com.bumptech.glide.Glide
-import com.example.tugas_1_dicoding.apiService.RetrofitClient
-import com.example.tugas_1_dicoding.apiService.UploadFetchCallback
-import com.example.tugas_1_dicoding.dataClass.UploadRequest
-import com.example.tugas_1_dicoding.dataClass.UploadResponse
+import androidx.fragment.app.viewModels
 import com.example.tugas_1_dicoding.databinding.FragmentPostImageDialogBinding
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
 
+@Suppress("DEPRECATION")
 class PostImageDialogFragment : DialogFragment() {
 
     private var _binding: FragmentPostImageDialogBinding? = null
     private val binding get() = _binding!!
 
-    private var photoUri: Uri? = null
-    private var message: String? = null
+    private val viewModel: UploadPostViewModel by viewModels()
 
-    private var data = UploadRequest(
-        token = "",
-        description = "",
-        lat = null,
-        lon = null,
-        photoFile = File("dummy.jpg")
-    )
+    private val CAMERA_REQUEST_CODE = 100
+    private val GALLERY_REQUEST_CODE = 101
 
-
-    // Register Activity Result Launchers at class-level (private val)
-    private val pickImageGalleryLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-            photoUri = it
-            displayImage(photoUri)
-        }
-    }
-
-    private val takePictureLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            photoUri?.let {
-                displayImage(it)
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPostImageDialogBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
-    // At this stage Dialog size can be adjusted
     override fun onStart() {
         super.onStart()
         dialog?.window?.setLayout(
@@ -90,101 +53,160 @@ class PostImageDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        message = arguments?.getString("key_data")
-        data?.token = message.toString()
-        Log.d("azhari", data.toString())
-        Log.d("azhari", message.toString())
+        val tokenFromActivity = arguments?.getString("key_data") ?: ""
+        viewModel.setToken(tokenFromActivity)
 
+
+        viewModel.imageBitmap.observe(viewLifecycleOwner) { bitmap ->
+            binding.imageView.setImageBitmap(bitmap)
+        }
+
+        viewModel.uploadResult.observe(viewLifecycleOwner) { success ->
+            success?.let{
+                clearAllInputs()
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                sendDummy()
+                dismiss()
+            }
+        }
+
+        viewModel.uploadError.observe(viewLifecycleOwner) { errorMsg ->
+            errorMsg?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                binding.editTextDescription.setText("")
+            }
+        }
 
         binding.buttonOpenCamera.setOnClickListener {
             openCamera()
         }
 
+
         binding.buttonOpenGallery.setOnClickListener {
             openGallery()
         }
 
+
         binding.buttonPost.setOnClickListener {
-            data.description = binding.editTextDescription.text.toString()
-            uploadImage()
-            data.photoFile = resizeImageIfNeeded(data.photoFile)
-            fetchUploadStory(object: UploadFetchCallback {
-                override fun onUploadFetched(upload: String) {
-                    Log.d("azhari", upload)
-                    clearAllInputs()
-                }
-
-                override fun onError(message: String) {
-                    Log.d("azhari", message)
-                }
-
+            viewModel.setDescription(binding.editTextDescription.text.toString())
+            val tokenValue = viewModel.token.value ?: ""
+            val description  = createDescriptionRequest(viewModel.description.value ?: "")
+            viewModel.imageBitmap.value?.let { bitmap ->
+                val filePart = prepareFilePartFromBitmap(bitmap)
+                viewModel.uploadImage(tokenValue,filePart, description)
+            } ?: run {
+                Toast.makeText(requireContext(), "Belum ada gambar yang dipilih", Toast.LENGTH_SHORT).show()
             }
-
-            )
         }
 
         binding.buttonCancel.setOnClickListener {
-            val result = Bundle().apply {
-                putString("result_key", "Data balikan dari DialogFragment")
+            sendDummy()
+            dismiss()
+        }
+
+        dialog?.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                Log.d("MyDialogFragment", "Tombol Back HP ditekan")
+                sendDummy()
+                dismiss()
+                true
+            } else {
+                false
             }
-            parentFragmentManager.setFragmentResult("requestKey", result)
-            dialog?.dismiss()
         }
     }
 
     private fun openCamera() {
-        val file = createImageFile()
-        photoUri = FileProvider.getUriForFile(
-            requireContext(),
-            "com.example.tugas_1_dicoding.fileprovider", // gunakan authority sesuai manifest
-            file
-        )
-        takePictureLauncher.launch(photoUri)
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE)
     }
 
     private fun openGallery() {
-        pickImageGalleryLauncher.launch("image/*")
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, GALLERY_REQUEST_CODE)
     }
 
-    private fun displayImage(uri: Uri?) {
-        uri ?: return
-        Glide.with(this)
-            .load(uri)
-            .fitCenter()
-            .into(binding.imageView)
-    }
-
-    private fun createImageFile(): File {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-        val storageDir = requireContext().cacheDir
-        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
-    }
-
-    private fun uriToFile(uri: Uri): File? {
-        val context = requireContext()
-        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
-        val tempFile = createImageFile()
-        tempFile.outputStream().use { outputStream ->
-            inputStream.copyTo(outputStream)
-        }
-        return tempFile
-    }
-
-    private fun uploadImage() {
-        photoUri?.let { uri ->
-            val file = uriToFile(uri)
-            if (file != null) {
-                data.photoFile = file
-            }else{
-                showToast("File error saat mengambil file")
-                return
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                CAMERA_REQUEST_CODE -> {
+                    val bitmap = data?.extras?.get("data") as? Bitmap
+                    bitmap?.let {
+                        viewModel.setImageBitmap(it)
+                    }
+                }
+                GALLERY_REQUEST_CODE -> {
+                    val uri = data?.data
+                    uri?.let {
+                        // Anda bisa konversi URI ke bitmap agar disimpan di ViewModel
+                        val bitmap = uriToBitmap(it)
+                        if (bitmap != null) {
+                            viewModel.setImageBitmap(bitmap)
+                        }
+                    }
+                }
             }
-
-        } ?: showToast("Gambar belum dipilih")
+        }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    // Contoh fungsi helper konversi URI ke Bitmap
+    private fun uriToBitmap(uri: Uri): Bitmap? {
+        return try {
+            val stream = requireContext().contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(stream)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun prepareFilePartFromBitmap(bitmap: Bitmap): MultipartBody.Part {
+        val maxWidth = 800
+        val maxHeight = 800
+
+        // Resize bitmap agar dimensinya tidak terlalu besar
+        val resizedBitmap = resizeBitmap(bitmap, maxWidth, maxHeight)
+
+        var compressQuality = 80
+        var bos = ByteArrayOutputStream()
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bos)
+        var bitmapData = bos.toByteArray()
+
+        // Turunkan kualitas kompresi jika ukuran masih > 1MB
+        while (bitmapData.size > 1_048_576 && compressQuality > 10) {
+            compressQuality -= 10
+            bos = ByteArrayOutputStream()
+            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bos)
+            bitmapData = bos.toByteArray()
+        }
+
+        Log.d("asd", "Final bitmap size: ${bitmapData.size} bytes with quality $compressQuality")
+
+        val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), bitmapData)
+        return MultipartBody.Part.createFormData("photo", "image.jpg", requestFile)
+    }
+
+    fun resizeBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+        val ratioBitmap = width.toFloat() / height.toFloat()
+        val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
+        var finalWidth = maxWidth
+        var finalHeight = maxHeight
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
+        } else {
+            finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
+        }
+        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
+    }
+
+
+    private fun createDescriptionRequest(text: String): RequestBody {
+        return RequestBody.create("text/plain".toMediaTypeOrNull(), text)
     }
 
     override fun onDestroyView() {
@@ -192,73 +214,16 @@ class PostImageDialogFragment : DialogFragment() {
         _binding = null
     }
 
-    private fun fetchUploadStory(callback: UploadFetchCallback) {
-
-        val photoRequestBody = data.photoFile.asRequestBody("image/png".toMediaTypeOrNull())
-        val photoPart = MultipartBody.Part.createFormData("photo", data.photoFile.name, photoRequestBody)
-        val descriptionPart = data.description.toRequestBody("text/plain".toMediaTypeOrNull())
-
-        val latPart = data.lat?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
-        val lonPart = data.lon?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
-
-
-        RetrofitClient.instance.uploadImage(data.token, photoPart, descriptionPart, latPart, lonPart)
-            .enqueue(object : Callback<UploadResponse> {
-                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>) {
-                    if (response.isSuccessful) {
-                        val storyResponse = response.body()
-                        if (storyResponse != null) {
-                            callback.onUploadFetched(storyResponse.message)
-                        } else {
-                            callback.onError("Response body or listStory is null")
-                        }
-                    } else {
-                        callback.onError("Response failed: ${response.code()} - ${response.message()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-                    callback.onError("Network request failed: ${t.message}")
-                }
-            })
-    }
-
     private fun clearAllInputs(){
-        binding.imageView.setImageDrawable(null)
+        viewModel.clearImageBitmap()
+        viewModel.setDescription("")
         binding.editTextDescription.setText("")
     }
 
-    private fun resizeImageIfNeeded(originalFile: File): File {
-        val maxSizeBytes = 1 * 1024 * 1024 // 1 MB in bytes
-
-        if (originalFile.length() <= maxSizeBytes) {
-            return originalFile
+    private fun sendDummy(){
+        val result = Bundle().apply {
+            putString("result_key", "Data balikan dari DialogFragment")
         }
-
-        // Get image dimensions without loading full bitmap
-        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(originalFile.absolutePath, options)
-        var width = options.outWidth
-        var height = options.outHeight
-
-        // Calculate an inSampleSize (scale factor) to reduce dimensions roughly under 1 MB
-        var scaleFactor = 1
-        val maxPixels = maxSizeBytes / 4 // approximate bytes per pixel (ARGB)
-
-        while ((width / scaleFactor) * (height / scaleFactor) > maxPixels) {
-            scaleFactor *= 2
-        }
-
-        // Decode bitmap with scale factor (downsample)
-        val decodeOptions = BitmapFactory.Options().apply { inSampleSize = scaleFactor }
-        val bitmap = BitmapFactory.decodeFile(originalFile.absolutePath, decodeOptions)
-
-        // Compress bitmap to JPEG with quality to reduce file size
-        val resizedFile = File(originalFile.parent, "resized_${originalFile.name}")
-        FileOutputStream(resizedFile).use { outStream ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outStream) // 80% quality, adjust as needed
-        }
-
-        return resizedFile
+        parentFragmentManager.setFragmentResult("requestKey", result)
     }
 }

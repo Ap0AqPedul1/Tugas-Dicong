@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.tugas_1_dicoding.dataClass.User
 import com.google.gson.Gson
 
-class SharedPrefHelper(private val context: Context) {
+class SharedPrefHelper(context: Context) {
     private val prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
 

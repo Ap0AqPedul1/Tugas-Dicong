@@ -1,5 +1,6 @@
 package com.example.tugas_1_dicoding.custom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.text.InputType
@@ -40,6 +41,7 @@ class CustomEditText @JvmOverloads constructor(
         setupListeners()
     }
 
+    @SuppressLint("CustomViewStyleable")
     private fun setupAttributes(attrs: AttributeSet?) {
         attrs?.let {
             val typedArray = context.obtainStyledAttributes(it, R.styleable.CustomPasswordEditText)
@@ -84,11 +86,6 @@ class CustomEditText @JvmOverloads constructor(
             Log.d(TAG, "Container clicked")
             editTextField.requestFocus()
         }
-    }
-
-    fun setConfirmTarget(target: CustomEditText) {
-        confirmTarget = target
-        mode = Mode.CONFIRM
     }
 
     private fun validate(s: Editable?) {
