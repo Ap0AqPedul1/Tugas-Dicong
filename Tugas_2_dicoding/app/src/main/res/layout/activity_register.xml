@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?android:attr/windowBackground"
+    tools:context=".ui.register.RegisterActivity">
+
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="120dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/test"
+        android:src="@drawable/ic_launcher_foreground"
+        tools:ignore="ImageContrastCheck" />
+
+    <!-- Judul Daftar -->
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/daftar"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/name"
+        android:textSize="14sp"
+        android:layout_marginTop="32dp" />
+
+    <com.example.tugas_1_dicoding.custom.CustomEditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/name"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:text="@string/email"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp" />
+
+    <com.example.tugas_1_dicoding.custom.CustomEditText
+        android:id="@+id/et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+
+        />
+    <!-- Input Konfirmasi Password -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no"
+        android:text="@string/password"
+        android:textSize="14sp"
+        android:layout_marginTop="16dp" />
+
+    <com.example.tugas_1_dicoding.custom.CustomEditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:inputType="textPassword"/>
+
+    <!-- Link ke Login -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sudah_memiliki_akun"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/masuk"
+            android:textColor="#1976D2"
+            android:textSize="14sp"
+            tools:ignore="TouchTargetSizeCheck" />
+    </LinearLayout>
+
+    <!-- Tombol Daftar -->
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#2196F3"
+        android:elevation="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.1"
+        android:text="@string/daftar"
+        android:textSize="18sp"
+        android:textColor="#212121"
+        tools:ignore="DuplicateSpeakableTextCheck,VisualLintButtonSize" />
+
+</LinearLayout>

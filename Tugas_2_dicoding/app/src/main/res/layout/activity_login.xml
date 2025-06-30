@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?android:attr/windowBackground"
+    tools:context=".ui.login.LoginActivity">
+
+    <ImageView
+        android:id="@+id/img_app_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="@string/test"
+        android:src="@drawable/ic_launcher_foreground"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tv_email_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/masukan_email"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp" />
+
+    <com.example.tugas_1_dicoding.custom.CustomEditText
+        android:id="@+id/et_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        />
+
+    <!-- Label Password -->
+    <TextView
+        android:id="@+id/tv_password_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- TextView untuk Validasi Password -->
+    <TextView
+        android:id="@+id/tv_password_validation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:visibility="gone" />
+
+    <com.example.tugas_1_dicoding.custom.CustomEditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="24dp">
+
+        <TextView
+            android:id="@+id/tv_no_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/belum_punya_akun"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/daftar"
+            android:textColor="#0277BD"
+            android:textSize="14sp"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_forgot_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/lupa_password"
+            android:textColor="#0277BD"
+            android:textSize="14sp"
+            tools:ignore="TouchTargetSizeCheck" />
+    </LinearLayout>
+
+    <!-- Tombol Masuk -->
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/blue_500"
+        android:elevation="4dp"
+        android:text="@string/login"
+        android:textAllCaps="false"
+        android:textColor="#212121"
+        android:textSize="18sp"
+        tools:ignore="DuplicateSpeakableTextCheck,VisualLintButtonSize" />
+
+</LinearLayout>
